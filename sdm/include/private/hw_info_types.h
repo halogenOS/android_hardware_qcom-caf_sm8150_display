@@ -125,6 +125,7 @@ enum HWPipeFlags {
 };
 
 enum HWAVRModes {
+  kQsyncNone,       // Disables Qsync.
   kContinuousMode,  // Mode to enable AVR feature for every frame.
   kOneShotMode,     // Mode to enable AVR feature for particular frame.
 };
@@ -173,6 +174,16 @@ enum class HWRecoveryEvent : uint32_t {
   kSuccess,            // driver succeeded recovery
   kCapture,            // driver PP_TIMEOUT, capture logs
   kDisplayPowerReset,  // driver requesting display power cycle
+};
+
+enum SDMVersion {
+  kVersionSDM855V1 = SDEVERSION(5, 0, 0),
+  kVersionSDM855V2 = SDEVERSION(5, 0, 1),
+  kVersionSM6150V1 = SDEVERSION(5, 3, 0),
+  kVersionSM7150V1 = SDEVERSION(5, 2, 0),
+  kVersionSM8250V1 = SDEVERSION(6, 0, 0),
+  kVersionSM7250V1 = SDEVERSION(6, 1, 0),
+  kVersionSM6250V1 = SDEVERSION(6, 2, 0),
 };
 
 typedef std::map<HWSubBlockType, std::vector<LayerBufferFormat>> FormatsMap;
@@ -561,7 +572,7 @@ struct HWDestScaleInfo {
 typedef std::map<uint32_t, HWDestScaleInfo *> DestScaleInfoMap;
 
 struct HWAVRInfo {
-  bool enable = false;                // Flag to Enable AVR feature
+  bool update = false;                // Update avr setting.
   HWAVRModes mode = kContinuousMode;  // Specifies the AVR mode
 };
 
@@ -600,6 +611,7 @@ struct HWPipeInfo {
   HWPipeCscInfo dgm_csc_info = {};
   std::vector<HWPipeTonemapLutInfo> lut_info = {};
   HWSrcTonemap tonemap = kSrcTonemapNone;
+  LayerTransform transform;
 };
 
 struct HWSolidfillStage {
